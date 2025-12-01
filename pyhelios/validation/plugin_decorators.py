@@ -610,3 +610,18 @@ def validate_radiation_camera_params(func: Callable) -> Callable:
         return func(self, validated_label, validated_bands, validated_position, validated_direction,
                    camera_properties, validated_samples, *args, **kwargs)
     return wrapper
+
+
+def validate_xml_file_params(func: Callable) -> Callable:
+    """
+    Validate XML file parameters for WeberPennTree loadXML method.
+    
+    This decorator validates filename parameters for XML file loading,
+    ensuring proper file format and path validation.
+    """
+    @wraps(func)
+    def wrapper(self, filename: str, *args, **kwargs):
+        from .plugins import validate_filename
+        validate_filename(filename, "filename", func.__name__, allowed_extensions=['.xml'])
+        return func(self, filename, *args, **kwargs)
+    return wrapper
